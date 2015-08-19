@@ -54,14 +54,9 @@ $(function() {
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
+        // Checks, if the class "menu-hidden" is inside the body
         it('is hidden by default', function() {
-			/*
-			var menuHidden = element(by.css('.menu hidden')).getAttribute('transform');
-			var menuHidden = element[0].findElementsByClassName('menu hidden');
-			console.log(menuHidden);
-			expect(menuHidden).toMatch('translate3d(-12em, 0px, 0px)');
-			* */
-		
+            expect($('body').hasClass("menu-hidden")).toBe(true);
         });
         
         /* TODO: Write a test that ensures the menu changes
@@ -69,9 +64,16 @@ $(function() {
           * should have two expectations: does the menu display when
           * clicked and does it hide when clicked again.
           */
-        it('is visible when icon is clicked', function() {
-			
-		
+
+        it('is displayed and hidden correctly', function() {
+            // Triggers a click on the element with the class menu-icon-link
+            $('.menu-icon-link').trigger('click');
+            // through the click the menu has to be displayed. This means, the Class menu-hidden should not be in the body.
+            expect($('body').hasClass("menu-hidden")).not.toBe(true);
+            // Triggers a new click on the class menu-icon-link
+            $('.menu-icon-link').trigger('click');
+            // now the menu should be hidden again. the class menu-hidden should be in the body again
+            expect($('body').hasClass("menu-hidden")).toBe(true);
         });
     });
     
@@ -84,10 +86,19 @@ $(function() {
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test wil require
          * the use of Jasmine's beforeEach and asynchronous done() function.
-         */
-        it('are loaded', function() {
-			
-		
+         */ 
+         // calls before the test the function loadFeed with the jasmine function done() as callback. So jasmine knows, when the async loading is finished.
+        beforeEach(function(done) {
+            loadFeed(0, function(){
+                done();
+            });
+        });
+
+        // after the initial loading is completed it checks if a entry inside the class feed is existing.
+        it('are loaded', function(done) {
+            var feedHasEntrie = $('.feed').has('.entry-link');
+            expect(feedHasEntrie.length).toBeGreaterThan(0);	
+            done();	
         });
 
     });
@@ -100,9 +111,30 @@ $(function() {
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
-        it('is working', function() {
-			
-		
+        var entriesBeforeLoad;
+        var entriesAfterLoad;
+
+        // calls before the test the function loadFeed with the jasmine function done() as callback. So jasmine knows, when the async loading is finished.
+        beforeEach(function(done) {
+            // empties the feed so that no prior content is existing
+            $('.feed').empty();
+            loadFeed(0, function(){
+                done();
+            });
+            // saves a example content after the first loading.
+            entrieBeforeLoad = $('.feed').find("h2").text();
+        });
+         
+        it('changes are working', function(done) {
+            // loading of another feed
+		    loadFeed(1, function(){
+                done();
+            });
+            // saves a content example at the same position as the first loading
+            entrieAfterLoad = $('.feed').find("h2").text();	
+            // checks if the two content example are not matching (meaning they changed, so it worked correctly)
+            expect(entrieBeforeLoad).not.toEqual(entrieAfterLoad);
+            done();
         });
 
     });
