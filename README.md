@@ -2,7 +2,7 @@
 JASMINE TESTS
 ===================
 
-Open the page at http://heckelsa.github.io/frontend-nanodegree-feedreader/.
+Open the page at http://heckelsa.github.io/frontend-nanodegree-feedreader/index.html.
 
 On the lower Part you see the Jasmine specs. All Tests should pass, meaning there shouldn't be any red failure.
 
